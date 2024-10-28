@@ -38,12 +38,19 @@ namespace ContenfulAPI.Controllers
         }
 
 
-        // GET: api/contentful/contenttypes
         [HttpGet("contenttypes")]
         public async Task<IActionResult> GetContentTypes()
         {
-            _logger.LogInformation("GetContentTypes endpoint hit");
-            return Ok(new { message = "Content types endpoint reached" });
+            try
+            {
+                var contentTypes = await _contentfulClient.GetContentTypes();
+                return Ok(contentTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching content types: {ex.Message}");
+            }
         }
+
     }
 }

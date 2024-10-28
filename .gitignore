@@ -3,5 +3,6 @@
 
 .DS_Store
 
-API/obj/
+# Ignore bin and obj directories in the server folder
+server/bin/
 server/obj/
