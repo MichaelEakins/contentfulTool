@@ -1,0 +1,6 @@
+@contentfulAPI_HostAddress = http://localhost:5078
+
+GET {{contentfulAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
