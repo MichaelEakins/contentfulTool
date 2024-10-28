@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Contentful.Core;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using System.Threading.Tasks;
 
 namespace ContenfulAPI.Controllers
@@ -11,11 +12,13 @@ namespace ContenfulAPI.Controllers
     public class ContentfulController : ControllerBase
     {
         private readonly IContentfulClient _contentfulClient;
+        private readonly IContentfulManagementClient _contentfulManagementClient;
         private readonly ILogger<ContentfulController> _logger;
 
-        public ContentfulController(IContentfulClient contentfulClient, ILogger<ContentfulController> logger)
+        public ContentfulController(IContentfulClient contentfulClient, IContentfulManagementClient contentfulManagementClient, ILogger<ContentfulController> logger)
         {
             _contentfulClient = contentfulClient;
+            _contentfulManagementClient = contentfulManagementClient;
             _logger = logger;
 
             _logger.LogInformation("ContentfulController initialized");
@@ -26,17 +29,14 @@ namespace ContenfulAPI.Controllers
         {
             try
             {
-                // Fetch entries from Contentful
                 var entries = await _contentfulClient.GetEntries<Entry<dynamic>>();
-                return Ok(entries); // Return actual entries from Contentful
+                return Ok(entries);
             }
             catch (Exception ex)
             {
-                // Log and return an error if something goes wrong
                 return StatusCode(500, $"Error fetching entries: {ex.Message}");
             }
         }
-
 
         [HttpGet("contenttypes")]
         public async Task<IActionResult> GetContentTypes()
@@ -52,5 +52,18 @@ namespace ContenfulAPI.Controllers
             }
         }
 
+        [HttpPost("contenttype")]
+        public async Task<IActionResult> CreateContentType([FromBody] ContentType contentType)
+        {
+            try
+            {
+                var createdContentType = await _contentfulManagementClient.CreateOrUpdateContentType(contentType);
+                return Ok(createdContentType);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error creating content type: {ex.Message}");
+            }
+        }
     }
 }

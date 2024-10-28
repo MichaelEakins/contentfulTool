@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure Contentful client with options from environment variables
+// Configure Content Delivery API client
 builder.Services.AddSingleton<IContentfulClient>(sp =>
 {
     var options = new ContentfulOptions
@@ -22,6 +22,18 @@ builder.Services.AddSingleton<IContentfulClient>(sp =>
     };
 
     return new ContentfulClient(new HttpClient(), options);
+});
+
+// Configure Content Management API client
+builder.Services.AddSingleton<IContentfulManagementClient>(sp =>
+{
+    var options = new ContentfulOptions
+    {
+        ManagementApiKey = Environment.GetEnvironmentVariable("CONTENTFUL_MANAGEMENT_API_KEY"),
+        SpaceId = Environment.GetEnvironmentVariable("CONTENTFUL_SPACE_ID")
+    };
+
+    return new ContentfulManagementClient(new HttpClient(), options);
 });
 
 var app = builder.Build();
