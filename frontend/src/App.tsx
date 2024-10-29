@@ -1,16 +1,19 @@
+// src/App.tsx
+
 import React from 'react';
-import AddEntryForm from './components/AddEntryForm';
-import ContentTypesList from './components/ContentTypesList';
+import ContentManager from './components/ContentManager';
 
 const App: React.FC = () => {
-    return (
-        <div className="App">
-            <h1>Contentful React App</h1>
-            <AddEntryForm />
-            <ContentTypesList />
-            {/* <ContentList /> */}
-        </div>
-    );
+  return (
+    <div className="App">
+      <header>
+        <h1>Welcome to the Content Manager</h1>
+      </header>
+      <main>
+        <ContentManager />
+      </main>
+    </div>
+  );
 };
 
 export default App;

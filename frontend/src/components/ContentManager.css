@@ -1,0 +1,13 @@
+/* src/components/ContentManager.css */
+.ContentManager {
+    padding: 1rem;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  select, button, input {
+    margin: 0.5rem;
+  }
+  
