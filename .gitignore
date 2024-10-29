@@ -1,8 +1,13 @@
 # Ignore environment files
 .env
+server/.env
+frontend/.env
 
 .DS_Store
 
 # Ignore bin and obj directories in the server folder
 server/bin/
 server/obj/
+
+#Ignore npm packages
+node_modules/

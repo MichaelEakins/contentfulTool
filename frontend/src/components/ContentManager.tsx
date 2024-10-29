@@ -19,7 +19,6 @@ const ContentManager: React.FC = () => {
   const fetchContentTypes = async () => {
     try {
       const response = await api.get<ContentType[]>(`${process.env.REACT_APP_API_BASE_URL}/Contentful/contenttypes`);
-      console.log("Fetched Content Types:", response.data); // Log to verify data structure
       setContentTypes(response.data);
     } catch (error) {
       console.error("Error fetching content types:", error);
