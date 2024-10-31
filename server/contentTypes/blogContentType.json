@@ -1,0 +1,43 @@
+{
+    "id": "blog",
+    "name": "Blog",
+    "description": "Content type for blog posts",
+    "fields": [
+      {
+        "id": "title",
+        "name": "Title",
+        "type": "Text",
+        "required": true,
+        "description": "The title of the blog post"
+      },
+      {
+        "id": "body",
+        "name": "Body",
+        "type": "RichText",
+        "required": true,
+        "description": "The main content of the blog post"
+      },
+      {
+        "id": "author",
+        "name": "Author",
+        "type": "Text",
+        "required": true,
+        "description": "The author of the blog post"
+      },
+      {
+        "id": "publicationDate",
+        "name": "Publication Date",
+        "type": "Date",
+        "required": true,
+        "description": "The publication date of the blog post"
+      },
+      {
+        "id": "tags",
+        "name": "Tags",
+        "type": "Array",
+        "required": false,
+        "description": "Tags associated with the blog post"
+      }
+    ]
+  }
+  

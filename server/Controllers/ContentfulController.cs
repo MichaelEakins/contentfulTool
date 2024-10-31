@@ -5,6 +5,7 @@ using Contentful.Core.Models;
 using System;
 using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
+using ContenfulAPI.Models;
 
 namespace ContenfulAPI.Controllers
 {
@@ -118,10 +119,29 @@ namespace ContenfulAPI.Controllers
         [SwaggerOperation(Summary = "Create a new content type", Description = "Programmatically create a new content type in Contentful.", Tags = new[] { "Content Types" })]
         [ProducesResponseType(typeof(object), 201)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateContentType([FromBody] ContentType contentType)
+        public async Task<IActionResult> CreateContentType([FromBody] ContentTypeModel model)
         {
             try
             {
+                var contentType = new ContentType
+                {
+                    SystemProperties = new SystemProperties { Id = model.Id },
+                    Name = model.Name,
+                    Description = model.Description,
+                    Fields = new List<Field>()
+                };
+
+                foreach (var field in model.Fields)
+                {
+                    contentType.Fields.Add(new Field
+                    {
+                        Id = field.Id,
+                        Name = field.Name,
+                        Type = field.Type,
+                        Required = field.Required,
+                    });
+                }
+
                 var createdContentType = await _contentfulManagementClient.CreateOrUpdateContentType(contentType);
                 return CreatedAtAction(nameof(GetContentTypes), new { id = createdContentType.SystemProperties.Id }, createdContentType);
             }

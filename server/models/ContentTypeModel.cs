@@ -22,13 +22,12 @@ namespace ContenfulAPI.Models
         public string? Type { get; set; }
     }
 
-    // ContentField class definition for fields within ContentTypeModel
     public class ContentField
     {
-        public string Id { get; set; } = string.Empty;  // Required by default
-        public string Name { get; set; } = string.Empty;  // Required by default
-        public string Type { get; set; } = string.Empty;  // Required by default
-        public bool Required { get; set; } = false;  // Optional field
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public bool Required { get; set; } = false;
 
         // Optional properties
         public string? Description { get; set; }
