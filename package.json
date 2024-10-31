@@ -4,7 +4,7 @@
   "scripts": {
     "start": "concurrently \"npm run start:frontend\" \"npm run start:server\"",
     "start:frontend": "npm --prefix frontend start",
-    "start:server": "dotnet run --project server"
+    "start:server": "dotnet clean && dotnet build && dotnet run --project ../server"
   },
   "devDependencies": {
     "concurrently": "^8.0.0"
