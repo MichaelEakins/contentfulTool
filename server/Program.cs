@@ -10,7 +10,12 @@ Env.Load();
 // Register controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations(); // Enables SwaggerOperation annotations
+    options.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName)); // Includes only grouped endpoints
+    options.TagActionsBy(api => new[] { api.GroupName ?? "Default" }); // Groups endpoints based on GroupName
+});
 
 // Configure CORS policy
 builder.Services.AddCors(options =>
