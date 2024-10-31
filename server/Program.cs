@@ -1,6 +1,7 @@
 using Contentful.Core;
 using Contentful.Core.Configuration;
 using DotNetEnv;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +11,17 @@ Env.Load();
 // Register controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Configure Swagger with grouping and annotations
 builder.Services.AddSwaggerGen(options =>
 {
-    options.EnableAnnotations(); // Enables SwaggerOperation annotations
-    options.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName)); // Includes only grouped endpoints
-    options.TagActionsBy(api => new[] { api.GroupName ?? "Default" }); // Groups endpoints based on GroupName
+    options.EnableAnnotations();
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Contentful API",
+        Version = "v1",
+        Description = "API for interacting with Contentful content types and assets"
+    });
 });
 
 // Configure CORS policy
@@ -28,7 +35,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Contentful Delivery client with options from environment variables
+// Configure Contentful Delivery client
 builder.Services.AddSingleton<IContentfulClient>(sp =>
 {
     var options = new ContentfulOptions
@@ -40,7 +47,7 @@ builder.Services.AddSingleton<IContentfulClient>(sp =>
     return new ContentfulClient(new HttpClient(), options);
 });
 
-// Configure Contentful Management client with options from environment variables
+// Configure Contentful Management client
 builder.Services.AddSingleton<IContentfulManagementClient>(sp =>
 {
     var options = new ContentfulOptions
@@ -54,17 +61,20 @@ builder.Services.AddSingleton<IContentfulManagementClient>(sp =>
 
 var app = builder.Build();
 
-// Enable Swagger in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contentful API V1");
+    c.DefaultModelsExpandDepth(-1);
+});
 }
 
-// Enable CORS policy
 app.UseCors("AllowLocalhost3000");
-
 app.UseAuthorization();
+Console.WriteLine("Mapping controllers...");
 app.MapControllers();
+
 
 app.Run();
