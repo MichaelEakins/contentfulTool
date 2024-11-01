@@ -1,0 +1,8 @@
+{
+    "title": "Sample Blog Post",
+    "body": "This is a sample body content of the blog post.",
+    "author": "Jane Doe",
+    "publicationDate": "2023-12-01T00:00:00",
+    "tags": ["tech", "contentful", "blogging"]
+  }
+  
