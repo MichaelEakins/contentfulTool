@@ -1,12 +1,9 @@
 using Contentful.Core;
 using Contentful.Core.Configuration;
-using DotNetEnv;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Load environment variables from .env
-Env.Load();
 
 // Register controllers and Swagger
 builder.Services.AddControllers();
@@ -35,29 +32,28 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Contentful Delivery client
+// Bind Contentful options from appsettings.json
+builder.Services.Configure<ContentfulOptions>(builder.Configuration.GetSection("Contentful"));
+
+// Configure Contentful Delivery client using options from appsettings.json
 builder.Services.AddSingleton<IContentfulClient>(sp =>
 {
-    var options = new ContentfulOptions
-    {
-        DeliveryApiKey = Environment.GetEnvironmentVariable("CONTENTFUL_DELIVERY_API_KEY"),
-        SpaceId = Environment.GetEnvironmentVariable("CONTENTFUL_SPACE_ID")
-    };
-
+    var options = sp.GetRequiredService<IOptions<ContentfulOptions>>().Value;
     return new ContentfulClient(new HttpClient(), options);
 });
 
-// Configure Contentful Management client
+// Configure Contentful Management client using options from appsettings.json
 builder.Services.AddSingleton<IContentfulManagementClient>(sp =>
 {
-    var options = new ContentfulOptions
-    {
-        ManagementApiKey = Environment.GetEnvironmentVariable("CONTENTFUL_MANAGEMENT_API_KEY"),
-        SpaceId = Environment.GetEnvironmentVariable("CONTENTFUL_SPACE_ID")
-    };
-
+    var options = sp.GetRequiredService<IOptions<ContentfulOptions>>().Value;
     return new ContentfulManagementClient(new HttpClient(), options);
 });
+
+builder.Configuration
+       .SetBasePath(Directory.GetCurrentDirectory())
+       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+       .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+       .AddEnvironmentVariables();
 
 var app = builder.Build();
 
@@ -65,16 +61,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contentful API V1");
-    c.DefaultModelsExpandDepth(-1);
-});
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contentful API V1");
+        c.DefaultModelsExpandDepth(-1);
+    });
 }
 
 app.UseCors("AllowLocalhost3000");
 app.UseAuthorization();
 Console.WriteLine("Mapping controllers...");
 app.MapControllers();
-
 
 app.Run();
